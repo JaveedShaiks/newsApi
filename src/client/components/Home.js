@@ -1,10 +1,12 @@
 import React from 'react';
+import { Header } from './header';
+import { NewsWrapperComponent } from './NewsList';
 
 const Home = () => {
   return (
     <div>
-      <div>Simple Test component</div>
-      <button onClick={() => console.log('clicked')}>click me</button>
+      <Header></Header>
+      <NewsWrapperComponent></NewsWrapperComponent>
     </div>
   );
 };
