@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchNews, updateVote } from '../actions';
 import { storeVoteData } from '../API/api';
+import { Header } from '../components/header';
+import { NewsWrapperComponent } from '../components/NewsList';
 
 export const getPageNumber = () => {
   return pageNumber;
 };
 
 class NewsList extends Component {
+  constructor(props) {
+    super(props);
+    this.updateVoteAndSave = this.updateVoteAndSave.bind(this);
+  }
   componentDidMount() {
     let url = new URL(window.location.href);
     let path = url.pathname;
@@ -15,28 +21,19 @@ class NewsList extends Component {
     this.props.fetchNews(pageNumber);
   }
 
-  storeVoteDataAndUpdateState(news) {
-    storeVoteData(news);
+  updateVoteAndSave(news) {
     this.props.updateVote(news);
-  }
-
-  renderNews() {
-    return this.props.newsList.map((news) => {
-      return (
-        <li key={news.id}>
-          <div>{news.title}</div>{' '}
-          <div onClick={() => this.storeVoteDataAndUpdateState(news)}>
-            {news.votes}
-          </div>
-        </li>
-      );
-    });
+    storeVoteData(news);
   }
 
   render() {
     return (
       <div>
-        <ul>{this.renderNews()}</ul>
+        <Header></Header>
+        <NewsWrapperComponent
+          newsList={this.props.newsList}
+          updateVoteCount={this.updateVoteAndSave}
+        ></NewsWrapperComponent>
       </div>
     );
   }

@@ -1,4 +1,15 @@
 import { FETCH_NEWS, UPDATE_VOTE } from '../actions';
+import { getLocalStorageData } from '../API/api';
+
+export const getVotes = (item) => {
+  let matchedNewsId = null;
+  if (getLocalStorageData()) {
+    matchedNewsId = getLocalStorageData().find(
+      (savedNews) => savedNews.id === item.objectID
+    );
+  }
+  return matchedNewsId ? matchedNewsId.votes : item.points;
+};
 
 export const parseNewsData = (data) => {
   let newData = data.map((item) => {
@@ -6,7 +17,8 @@ export const parseNewsData = (data) => {
       id: item.objectID,
       title: item.title,
       comments: item.num_comments,
-      votes: item.points,
+      votes: __isServer__ ? item.points : getVotes(item),
+      display: false,
     };
   });
   return newData;

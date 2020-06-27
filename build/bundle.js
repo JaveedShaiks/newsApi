@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -152,11 +152,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _App = __webpack_require__(9);
+var _App = __webpack_require__(10);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _NewsList = __webpack_require__(10);
+var _NewsList = __webpack_require__(11);
 
 var _NewsList2 = _interopRequireDefault(_NewsList);
 
@@ -180,20 +180,47 @@ module.exports = require("react-redux");
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
-
-module.exports = require("redux");
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(7);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var storeVoteData = exports.storeVoteData = function storeVoteData(data) {
+  var savedNewsData = getLocalStorageData() ? getLocalStorageData() : [];
+  if (savedNewsData.length) {
+    savedNewsData = savedNewsData.filter(function (item) {
+      return item.id != data.id;
+    });
+    savedNewsData.push(data);
+  } else {
+    savedNewsData.push(data);
+  }
+  localStorage.setItem('newsList', JSON.stringify(savedNewsData));
+};
 
-var _express = __webpack_require__(8);
+var getLocalStorageData = exports.getLocalStorageData = function getLocalStorageData() {
+  return localStorage.getItem('newsList') ? JSON.parse(localStorage.getItem('newsList')) : null;
+};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("redux");
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(8);
+
+var _express = __webpack_require__(9);
 
 var _express2 = _interopRequireDefault(_express);
 
@@ -203,11 +230,11 @@ var _Routes = __webpack_require__(3);
 
 var _Routes2 = _interopRequireDefault(_Routes);
 
-var _server = __webpack_require__(12);
+var _server = __webpack_require__(14);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _store = __webpack_require__(16);
+var _store = __webpack_require__(18);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -254,19 +281,19 @@ app.listen(port, function () {
 });
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports = require("babel-polyfill");
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 module.exports = require("express");
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -305,7 +332,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -326,7 +353,11 @@ var _reactRedux = __webpack_require__(4);
 
 var _actions = __webpack_require__(2);
 
-var _api = __webpack_require__(11);
+var _api = __webpack_require__(5);
+
+var _header = __webpack_require__(12);
+
+var _NewsList = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -343,10 +374,13 @@ var getPageNumber = exports.getPageNumber = function getPageNumber() {
 var NewsList = function (_Component) {
   _inherits(NewsList, _Component);
 
-  function NewsList() {
+  function NewsList(props) {
     _classCallCheck(this, NewsList);
 
-    return _possibleConstructorReturn(this, (NewsList.__proto__ || Object.getPrototypeOf(NewsList)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (NewsList.__proto__ || Object.getPrototypeOf(NewsList)).call(this, props));
+
+    _this.updateVoteAndSave = _this.updateVoteAndSave.bind(_this);
+    return _this;
   }
 
   _createClass(NewsList, [{
@@ -358,35 +392,10 @@ var NewsList = function (_Component) {
       this.props.fetchNews(pageNumber);
     }
   }, {
-    key: 'storeVoteDataAndUpdateState',
-    value: function storeVoteDataAndUpdateState(news) {
-      (0, _api.storeVoteData)(news);
+    key: 'updateVoteAndSave',
+    value: function updateVoteAndSave(news) {
       this.props.updateVote(news);
-    }
-  }, {
-    key: 'renderNews',
-    value: function renderNews() {
-      var _this2 = this;
-
-      return this.props.newsList.map(function (news) {
-        return _react2.default.createElement(
-          'li',
-          { key: news.id },
-          _react2.default.createElement(
-            'div',
-            null,
-            news.title
-          ),
-          ' ',
-          _react2.default.createElement(
-            'div',
-            { onClick: function onClick() {
-                return _this2.storeVoteDataAndUpdateState(news);
-              } },
-            news.votes
-          )
-        );
-      });
+      (0, _api.storeVoteData)(news);
     }
   }, {
     key: 'render',
@@ -394,11 +403,11 @@ var NewsList = function (_Component) {
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(
-          'ul',
-          null,
-          this.renderNews()
-        )
+        _react2.default.createElement(_header.Header, null),
+        _react2.default.createElement(_NewsList.NewsWrapperComponent, {
+          newsList: this.props.newsList,
+          updateVoteCount: this.updateVoteAndSave
+        })
       );
     }
   }]);
@@ -429,7 +438,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -438,12 +447,125 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var storeVoteData = exports.storeVoteData = function storeVoteData(data) {
-  console.log('data to store', data);
+exports.Header = undefined;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Header = exports.Header = function Header() {
+  return _react2.default.createElement(
+    "div",
+    { className: "container-fluid appheader" },
+    _react2.default.createElement(
+      "div",
+      { className: "container" },
+      _react2.default.createElement(
+        "div",
+        null,
+        "Hacker News"
+      )
+    )
+  );
 };
 
 /***/ }),
-/* 12 */
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NewsWrapperComponent = undefined;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var NewsWrapperComponent = exports.NewsWrapperComponent = function NewsWrapperComponent(_ref) {
+  var _ref$newsList = _ref.newsList,
+      newsList = _ref$newsList === undefined ? [] : _ref$newsList,
+      updateVoteCount = _ref.updateVoteCount;
+
+  var renderedNewsList = newsList.map(function (news) {
+    return _react2.default.createElement(
+      "li",
+      { key: news.id, className: "list-group-item" },
+      _react2.default.createElement(
+        "div",
+        { className: "row" },
+        _react2.default.createElement(
+          "div",
+          { className: "col-2 col-sm-2 col-lg-1" },
+          news.comments
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "col-2 col-sm-2 col-lg-1" },
+          news.votes
+        ),
+        _react2.default.createElement(
+          "div",
+          {
+            className: "col-2 col-sm-2 col-lg-1",
+            onClick: function onClick() {
+              return updateVoteCount(news);
+            }
+          },
+          "^"
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "col-6 col-sm-6 col-lg-9" },
+          news.title
+        )
+      )
+    );
+  });
+  return _react2.default.createElement(
+    "div",
+    { className: "container" },
+    _react2.default.createElement(
+      "div",
+      { className: "row" },
+      _react2.default.createElement(
+        "div",
+        { className: "col-2 col-sm-2 col-lg-1" },
+        "Comments"
+      ),
+      _react2.default.createElement(
+        "div",
+        { className: "col-2 col-sm-2 col-lg-1" },
+        "Vote Count"
+      ),
+      _react2.default.createElement(
+        "div",
+        { className: "col-2 col-sm-2 col-lg-1" },
+        "UpVote"
+      ),
+      _react2.default.createElement(
+        "div",
+        { className: "col-6 col-sm-6 col-lg-9" },
+        "News Details"
+      )
+    ),
+    _react2.default.createElement(
+      "ul",
+      { className: "list-group list-group-flush" },
+      renderedNewsList
+    )
+  );
+};
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -457,15 +579,15 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(13);
+var _server = __webpack_require__(15);
 
-var _reactRouterDom = __webpack_require__(14);
+var _reactRouterDom = __webpack_require__(16);
 
 var _reactRedux = __webpack_require__(4);
 
 var _reactRouterConfig = __webpack_require__(1);
 
-var _serializeJavascript = __webpack_require__(15);
+var _serializeJavascript = __webpack_require__(17);
 
 var _serializeJavascript2 = _interopRequireDefault(_serializeJavascript);
 
@@ -494,25 +616,25 @@ exports.default = function (req, store, context) {
 };
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-router-dom");
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = require("serialize-javascript");
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -522,17 +644,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(5);
+var _redux = __webpack_require__(6);
 
-var _reduxThunk = __webpack_require__(17);
+var _reduxThunk = __webpack_require__(19);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _axios = __webpack_require__(18);
+var _axios = __webpack_require__(20);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _reducers = __webpack_require__(19);
+var _reducers = __webpack_require__(21);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -550,19 +672,19 @@ exports.default = function (req) {
 };
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-thunk");
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = require("axios");
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -572,9 +694,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(5);
+var _redux = __webpack_require__(6);
 
-var _newsReducer = __webpack_require__(20);
+var _newsReducer = __webpack_require__(22);
 
 var _newsReducer2 = _interopRequireDefault(_newsReducer);
 
@@ -585,7 +707,7 @@ exports.default = (0, _redux.combineReducers)({
 });
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -594,9 +716,21 @@ exports.default = (0, _redux.combineReducers)({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateNewsData = exports.parseNewsData = undefined;
+exports.updateNewsData = exports.parseNewsData = exports.getVotes = undefined;
 
 var _actions = __webpack_require__(2);
+
+var _api = __webpack_require__(5);
+
+var getVotes = exports.getVotes = function getVotes(item) {
+  var matchedNewsId = null;
+  if ((0, _api.getLocalStorageData)()) {
+    matchedNewsId = (0, _api.getLocalStorageData)().find(function (savedNews) {
+      return savedNews.id === item.objectID;
+    });
+  }
+  return matchedNewsId ? matchedNewsId.votes : item.points;
+};
 
 var parseNewsData = exports.parseNewsData = function parseNewsData(data) {
   var newData = data.map(function (item) {
@@ -604,7 +738,8 @@ var parseNewsData = exports.parseNewsData = function parseNewsData(data) {
       id: item.objectID,
       title: item.title,
       comments: item.num_comments,
-      votes: item.points
+      votes:  true ? item.points : getVotes(item),
+      display: false
     };
   });
   return newData;
