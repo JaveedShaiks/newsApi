@@ -4,6 +4,8 @@ import { fetchNews, updateVote, hideNews } from '../actions';
 import { storeVoteData } from '../API/api';
 import { Header } from '../components/header';
 import { NewsWrapperComponent } from '../components/NewsList';
+import { Links } from '../components/link';
+import { Chart } from '../components/chart';
 
 export const getPageNumber = () => {
   return pageNumber;
@@ -41,13 +43,15 @@ class NewsList extends Component {
           updateVoteCount={this.updateVoteAndSave}
           hideNews={this.hideAndStore}
         ></NewsWrapperComponent>
+        <Links pageNo={this.props.pageNo}></Links>
+        <Chart newsList={this.props.newsList}></Chart>
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { newsList: state.newsList };
+  return { newsList: state.newsList, pageNo: state.pageNumber };
 }
 
 function loadData(store, pageNumber) {

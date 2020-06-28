@@ -71,12 +71,6 @@ module.exports = require("react");
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-module.exports = require("react-router-config");
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89,6 +83,7 @@ Object.defineProperty(exports, "__esModule", {
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var FETCH_NEWS = exports.FETCH_NEWS = 'fetch_news';
+var SAVE_PAGE = exports.SAVE_PAGE = 'save_page';
 
 var fetchNews = exports.fetchNews = function fetchNews(pageNumber) {
   return function () {
@@ -98,10 +93,14 @@ var fetchNews = exports.fetchNews = function fetchNews(pageNumber) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              dispatch({
+                type: SAVE_PAGE,
+                payload: pageNumber
+              });
+              _context.next = 3;
               return api.get('/search_by_date?tags=story&page=' + pageNumber);
 
-            case 2:
+            case 3:
               res = _context.sent;
 
 
@@ -110,7 +109,7 @@ var fetchNews = exports.fetchNews = function fetchNews(pageNumber) {
                 payload: res
               });
 
-            case 4:
+            case 5:
             case 'end':
               return _context.stop();
           }
@@ -143,6 +142,12 @@ var hideNews = exports.hideNews = function hideNews(data) {
     });
   };
 };
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router-config");
 
 /***/ }),
 /* 3 */
@@ -309,17 +314,17 @@ var _express = __webpack_require__(9);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _reactRouterConfig = __webpack_require__(1);
+var _reactRouterConfig = __webpack_require__(2);
 
 var _Routes = __webpack_require__(3);
 
 var _Routes2 = _interopRequireDefault(_Routes);
 
-var _server = __webpack_require__(16);
+var _server = __webpack_require__(19);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _store = __webpack_require__(20);
+var _store = __webpack_require__(23);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -392,9 +397,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterConfig = __webpack_require__(1);
+var _reactRouterConfig = __webpack_require__(2);
 
-var _actions = __webpack_require__(2);
+var _actions = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -436,13 +441,17 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(4);
 
-var _actions = __webpack_require__(2);
+var _actions = __webpack_require__(1);
 
 var _api = __webpack_require__(5);
 
 var _header = __webpack_require__(14);
 
 var _NewsList = __webpack_require__(15);
+
+var _link = __webpack_require__(16);
+
+var _chart = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -500,7 +509,9 @@ var NewsList = function (_Component) {
           newsList: this.props.newsList,
           updateVoteCount: this.updateVoteAndSave,
           hideNews: this.hideAndStore
-        })
+        }),
+        _react2.default.createElement(_link.Links, { pageNo: this.props.pageNo }),
+        _react2.default.createElement(_chart.Chart, { newsList: this.props.newsList })
       );
     }
   }]);
@@ -509,7 +520,7 @@ var NewsList = function (_Component) {
 }(_react.Component);
 
 function mapStateToProps(state) {
-  return { newsList: state.newsList };
+  return { newsList: state.newsList, pageNo: state.pageNumber };
 }
 
 function loadData(store, pageNumber) {
@@ -697,20 +708,137 @@ var NewsWrapperComponent = exports.NewsWrapperComponent = function NewsWrapperCo
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Links = undefined;
 
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(17);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _reactRouterDom = __webpack_require__(18);
+var Links = exports.Links = function Links(_ref) {
+  var pageNo = _ref.pageNo;
+
+  var prevLink = pageNo - 1;
+  var NextLink = pageNo + 1;
+  return _react2.default.createElement(
+    'div',
+    { className: 'container' },
+    _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        'span',
+        { className: prevLink < 1 ? 'disableLink' : '' },
+        _react2.default.createElement(
+          'a',
+          { href: prevLink },
+          'Prev'
+        ),
+        ' '
+      ),
+      '|',
+      ' ',
+      _react2.default.createElement(
+        'span',
+        { className: prevLink >= 50 ? 'disableLink' : '' },
+        _react2.default.createElement(
+          'a',
+          { href: NextLink },
+          'Next'
+        )
+      )
+    )
+  );
+};
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Chart = undefined;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _recharts = __webpack_require__(18);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Chart = exports.Chart = function Chart(_ref) {
+  var newsList = _ref.newsList;
+
+  return _react2.default.createElement(
+    'div',
+    { className: 'container' },
+    _react2.default.createElement(
+      _recharts.ResponsiveContainer,
+      { width: '100%' },
+      _react2.default.createElement(
+        _recharts.LineChart,
+        {
+          height: 500,
+          data: newsList,
+          syncId: 'anyId',
+          margin: {
+            top: 10,
+            right: 30,
+            left: 0,
+            bottom: 0
+          }
+        },
+        _react2.default.createElement(_recharts.CartesianGrid, null),
+        _react2.default.createElement(_recharts.XAxis, { dataKey: 'id' }),
+        _react2.default.createElement(_recharts.YAxis, { dataKey: 'votes' }),
+        _react2.default.createElement(_recharts.Tooltip, null),
+        _react2.default.createElement(_recharts.Line, {
+          type: 'monotone',
+          dataKey: 'votes',
+          stroke: '#8884d8',
+          fill: '#8884d8'
+        })
+      )
+    )
+  );
+};
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = require("recharts");
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _server = __webpack_require__(20);
+
+var _reactRouterDom = __webpack_require__(21);
 
 var _reactRedux = __webpack_require__(4);
 
-var _reactRouterConfig = __webpack_require__(1);
+var _reactRouterConfig = __webpack_require__(2);
 
-var _serializeJavascript = __webpack_require__(19);
+var _serializeJavascript = __webpack_require__(22);
 
 var _serializeJavascript2 = _interopRequireDefault(_serializeJavascript);
 
@@ -739,25 +867,25 @@ exports.default = function (req, store, context) {
 };
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-router-dom");
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = require("serialize-javascript");
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -769,15 +897,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = __webpack_require__(6);
 
-var _reduxThunk = __webpack_require__(21);
+var _reduxThunk = __webpack_require__(24);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _axios = __webpack_require__(22);
+var _axios = __webpack_require__(25);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _reducers = __webpack_require__(23);
+var _reducers = __webpack_require__(26);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -795,19 +923,19 @@ exports.default = function (req) {
 };
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-thunk");
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports) {
 
 module.exports = require("axios");
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -819,18 +947,23 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = __webpack_require__(6);
 
-var _newsReducer = __webpack_require__(24);
+var _newsReducer = __webpack_require__(27);
 
 var _newsReducer2 = _interopRequireDefault(_newsReducer);
+
+var _pageReducer = __webpack_require__(28);
+
+var _pageReducer2 = _interopRequireDefault(_pageReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = (0, _redux.combineReducers)({
-  newsList: _newsReducer2.default
+  newsList: _newsReducer2.default,
+  pageNumber: _pageReducer2.default
 });
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -840,7 +973,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _actions = __webpack_require__(2);
+var _actions = __webpack_require__(1);
 
 var _api = __webpack_require__(5);
 
@@ -855,6 +988,31 @@ exports.default = function () {
       return (0, _api.updateNewsData)(state, action.payload);
     case _actions.HIDE_NEWS:
       return (0, _api.hideNewsData)(state, action.payload);
+    default:
+      return state;
+  }
+};
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _actions = __webpack_require__(1);
+
+exports.default = function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _actions.SAVE_PAGE:
+      return action.payload;
     default:
       return state;
   }

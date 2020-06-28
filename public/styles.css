@@ -2,3 +2,6 @@
   background-color: rgb(231, 107, 107);
   color: #fff;
 }
+.disableLink {
+  pointer-events: none;
+}
