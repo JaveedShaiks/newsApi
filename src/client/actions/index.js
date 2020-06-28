@@ -11,9 +11,16 @@ export const fetchNews = (pageNumber) => async (dispatch, getState, api) => {
 
 export const UPDATE_VOTE = 'update_Vote';
 export const updateVote = (data) => (dispatch, getState, api) => {
-  console.log('updateData:', data);
   dispatch({
     type: UPDATE_VOTE,
+    payload: data,
+  });
+};
+
+export const HIDE_NEWS = 'hide_news';
+export const hideNews = (data) => (dispatch, getState, api) => {
+  dispatch({
+    type: HIDE_NEWS,
     payload: data,
   });
 };

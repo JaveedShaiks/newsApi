@@ -1,6 +1,10 @@
 import React from 'react';
 
-export const NewsWrapperComponent = ({ newsList = [], updateVoteCount }) => {
+export const NewsWrapperComponent = ({
+  newsList = [],
+  updateVoteCount,
+  hideNews,
+}) => {
   const renderedNewsList = newsList.map((news) => {
     return (
       <li key={news.id} className="list-group-item">
@@ -13,7 +17,10 @@ export const NewsWrapperComponent = ({ newsList = [], updateVoteCount }) => {
           >
             ^
           </div>
-          <div className="col-6 col-sm-6 col-lg-9">{news.title}</div>
+          <div className="col-6 col-sm-6 col-lg-9">
+            <span>{news.title}</span> |{' '}
+            <span onClick={() => hideNews(news)}>[Hide]</span>{' '}
+          </div>
         </div>
       </li>
     );

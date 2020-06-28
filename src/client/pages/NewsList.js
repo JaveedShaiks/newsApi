@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchNews, updateVote } from '../actions';
+import { fetchNews, updateVote, hideNews } from '../actions';
 import { storeVoteData } from '../API/api';
 import { Header } from '../components/header';
 import { NewsWrapperComponent } from '../components/NewsList';
@@ -13,6 +13,7 @@ class NewsList extends Component {
   constructor(props) {
     super(props);
     this.updateVoteAndSave = this.updateVoteAndSave.bind(this);
+    this.hideAndStore = this.hideAndStore.bind(this);
   }
   componentDidMount() {
     let url = new URL(window.location.href);
@@ -23,7 +24,12 @@ class NewsList extends Component {
 
   updateVoteAndSave(news) {
     this.props.updateVote(news);
-    storeVoteData(news);
+    storeVoteData({ id: news.id, votes: news.votes, display: true });
+  }
+
+  hideAndStore(news) {
+    this.props.hideNews(news);
+    storeVoteData({ id: news.id, votes: news.votes, display: false });
   }
 
   render() {
@@ -33,6 +39,7 @@ class NewsList extends Component {
         <NewsWrapperComponent
           newsList={this.props.newsList}
           updateVoteCount={this.updateVoteAndSave}
+          hideNews={this.hideAndStore}
         ></NewsWrapperComponent>
       </div>
     );
@@ -50,6 +57,7 @@ function mapDispatchToProps(dispatch) {
   return {
     fetchNews: (pageNumber) => dispatch(fetchNews(pageNumber)),
     updateVote: (data) => dispatch(updateVote(data)),
+    hideNews: (news) => dispatch(hideNews(news)),
   };
 }
 export default {
