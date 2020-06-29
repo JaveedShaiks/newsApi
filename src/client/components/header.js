@@ -4,7 +4,7 @@ export const Header = () => {
   return (
     <div className="container-fluid appheader">
       <div className="container">
-        <div>Hacker News</div>
+        <h4 className=" text-center">Hacker News</h4>
       </div>
     </div>
   );

@@ -1,7 +1,62 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 16px;
+}
+
 .appheader {
-  background-color: rgb(231, 107, 107);
-  color: #fff;
+  margin-bottom: 10px;
 }
 .disableLink {
   pointer-events: none;
+}
+.disableLink a {
+  color: #979090 !important;
+}
+.activeBg {
+  background-color: #ff6600 !important;
+  color: #fff;
+}
+.striped-list {
+  font-size: 14px;
+}
+.striped-list li {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  background-color: #fcfcfc;
+}
+.striped-list > li:nth-of-type(odd) {
+  background-color: #eee;
+}
+.contentTitle {
+  display: inline;
+}
+.contentTitle a {
+  color: #212529;
+}
+.contentInfo {
+  display: inline;
+  font-size: 13px;
+}
+.contentInfo span {
+  color: #777070;
+}
+.cursor {
+  cursor: pointer;
+}
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid #a99e9e;
+  margin: 6px auto 0 auto;
+}
+.links a {
+  color: #ff6600;
+}
+.chart {
+  width: 100%;
+  height: 300px;
+}
+.recharts-wrapper {
+  width: 100% !important;
 }

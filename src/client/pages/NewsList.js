@@ -38,6 +38,7 @@ class NewsList extends Component {
     return (
       <div>
         <Header></Header>
+        <Links pageNo={this.props.pageNo}></Links>
         <NewsWrapperComponent
           newsList={this.props.newsList}
           updateVoteCount={this.updateVoteAndSave}

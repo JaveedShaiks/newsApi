@@ -25712,7 +25712,9 @@ var parseNewsData = exports.parseNewsData = function parseNewsData(data) {
       id: item.objectID,
       title: item.title,
       comments: item.num_comments,
-      votes:  false ? item.points : getVotes(item)
+      votes:  false ? item.points : getVotes(item),
+      url: item.url,
+      author: item.author
     };
   });
   return newData;
@@ -68645,6 +68647,7 @@ var NewsList = function (_Component) {
         'div',
         null,
         _react2.default.createElement(_header.Header, null),
+        _react2.default.createElement(_link.Links, { pageNo: this.props.pageNo }),
         _react2.default.createElement(_NewsList.NewsWrapperComponent, {
           newsList: this.props.newsList,
           updateVoteCount: this.updateVoteAndSave,
@@ -71564,8 +71567,8 @@ var Header = exports.Header = function Header() {
       "div",
       { className: "container" },
       _react2.default.createElement(
-        "div",
-        null,
+        "h4",
+        { className: " text-center" },
         "Hacker News"
       )
     )
@@ -71599,48 +71602,61 @@ var NewsWrapperComponent = exports.NewsWrapperComponent = function NewsWrapperCo
   var renderedNewsList = newsList.map(function (news) {
     return _react2.default.createElement(
       "li",
-      { key: news.id, className: "list-group-item" },
+      { key: news.id, className: "list-group-item pb-1 pt-1" },
       _react2.default.createElement(
         "div",
         { className: "row" },
         _react2.default.createElement(
           "div",
-          { className: "col-2 col-sm-2 col-lg-1" },
+          { className: "col-2 col-sm-2 col-lg-1 pl-1 pr-1 text-center" },
           news.comments
         ),
         _react2.default.createElement(
           "div",
-          { className: "col-2 col-sm-2 col-lg-1" },
+          { className: "col-2 col-sm-2 col-lg-1 pl-1 pr-1 text-center" },
           news.votes
         ),
         _react2.default.createElement(
           "div",
           {
-            className: "col-2 col-sm-2 col-lg-1",
+            className: "col-2 col-sm-2 col-lg-1 pl-1 pr-1 text-center",
             onClick: function onClick() {
               return updateVoteCount(news);
             }
           },
-          "^"
+          _react2.default.createElement("div", { className: "triangle-up cursor" })
         ),
         _react2.default.createElement(
           "div",
-          { className: "col-6 col-sm-6 col-lg-9" },
+          { className: "col-6 col-sm-6 col-lg-9 pl-1 pr-1" },
           _react2.default.createElement(
-            "span",
-            null,
-            news.title
+            "div",
+            { className: "contentTitle" },
+            _react2.default.createElement(
+              "a",
+              { href: news.url, target: "_blank" },
+              news.title
+            )
           ),
-          " |",
-          ' ',
           _react2.default.createElement(
-            "span",
-            { onClick: function onClick() {
-                return hideNews(news);
-              } },
-            "[Hide]"
-          ),
-          ' '
+            "div",
+            { className: "contentInfo" },
+            _react2.default.createElement(
+              "span",
+              null,
+              " By ",
+              news.author
+            ),
+            " | [",
+            _react2.default.createElement(
+              "span",
+              { className: "cursor", onClick: function onClick() {
+                  return hideNews(news);
+                } },
+              "Hide"
+            ),
+            "]"
+          )
         )
       )
     );
@@ -71649,32 +71665,36 @@ var NewsWrapperComponent = exports.NewsWrapperComponent = function NewsWrapperCo
     "div",
     { className: "container" },
     _react2.default.createElement(
-      "div",
-      { className: "row" },
-      _react2.default.createElement(
-        "div",
-        { className: "col-2 col-sm-2 col-lg-1" },
-        "Comments"
-      ),
-      _react2.default.createElement(
-        "div",
-        { className: "col-2 col-sm-2 col-lg-1" },
-        "Vote Count"
-      ),
-      _react2.default.createElement(
-        "div",
-        { className: "col-2 col-sm-2 col-lg-1" },
-        "UpVote"
-      ),
-      _react2.default.createElement(
-        "div",
-        { className: "col-6 col-sm-6 col-lg-9" },
-        "News Details"
-      )
-    ),
-    _react2.default.createElement(
       "ul",
-      { className: "list-group list-group-flush" },
+      { className: "list-group striped-list" },
+      _react2.default.createElement(
+        "li",
+        { className: "list-group-item activeBg pb-1 pt-1" },
+        _react2.default.createElement(
+          "div",
+          { className: "row" },
+          _react2.default.createElement(
+            "div",
+            { className: "col-2 col-sm-2 col-lg-1 pl-1 pr-1 text-center" },
+            "Comments"
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "col-2 col-sm-2 col-lg-1 pl-1 pr-1 text-center" },
+            "Vote Count"
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "col-2 col-sm-2 col-lg-1 pl-1 pr-1 text-center" },
+            "UpVote"
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "col-6 col-sm-6 col-lg-9 pl-1 pr-1" },
+            "News Details"
+          )
+        )
+      ),
       renderedNewsList
     )
   );
@@ -71702,32 +71722,32 @@ var Links = exports.Links = function Links(_ref) {
   var pageNo = _ref.pageNo;
 
   var prevLink = pageNo - 1;
-  var NextLink = pageNo + 1;
+  var nextLink = pageNo + 1;
   return _react2.default.createElement(
-    'div',
-    { className: 'container' },
+    "div",
+    { className: "container" },
     _react2.default.createElement(
-      'div',
-      null,
+      "div",
+      { className: "text-right links" },
       _react2.default.createElement(
-        'span',
+        "span",
         { className: prevLink < 1 ? 'disableLink' : '' },
         _react2.default.createElement(
-          'a',
-          { href: prevLink },
-          'Prev'
+          "a",
+          { href: prevLink.toString() },
+          "Prev"
         ),
         ' '
       ),
-      '|',
+      "|",
       ' ',
       _react2.default.createElement(
-        'span',
-        { className: prevLink >= 50 ? 'disableLink' : '' },
+        "span",
+        { className: nextLink >= 50 ? 'disableLink' : '' },
         _react2.default.createElement(
-          'a',
-          { href: NextLink },
-          'Next'
+          "a",
+          { href: nextLink.toString() },
+          "Next"
         )
       )
     )
@@ -71761,31 +71781,34 @@ var Chart = exports.Chart = function Chart(_ref) {
     'div',
     { className: 'container' },
     _react2.default.createElement(
-      _recharts.ResponsiveContainer,
-      { width: '100%' },
+      'div',
+      { className: 'chart' },
       _react2.default.createElement(
-        _recharts.LineChart,
-        {
-          height: 500,
-          data: newsList,
-          syncId: 'anyId',
-          margin: {
-            top: 10,
-            right: 30,
-            left: 0,
-            bottom: 0
-          }
-        },
-        _react2.default.createElement(_recharts.CartesianGrid, null),
-        _react2.default.createElement(_recharts.XAxis, { dataKey: 'id' }),
-        _react2.default.createElement(_recharts.YAxis, { dataKey: 'votes' }),
-        _react2.default.createElement(_recharts.Tooltip, null),
-        _react2.default.createElement(_recharts.Line, {
-          type: 'monotone',
-          dataKey: 'votes',
-          stroke: '#8884d8',
-          fill: '#8884d8'
-        })
+        _recharts.ResponsiveContainer,
+        { width: '100%', height: 300 },
+        _react2.default.createElement(
+          _recharts.LineChart,
+          {
+            data: newsList,
+            syncId: 'anyId',
+            margin: {
+              top: 5,
+              right: 30,
+              left: 0,
+              bottom: 0
+            }
+          },
+          _react2.default.createElement(_recharts.CartesianGrid, { strokeDasharray: '3 3' }),
+          _react2.default.createElement(_recharts.XAxis, { dataKey: 'id' }),
+          _react2.default.createElement(_recharts.YAxis, { dataKey: 'votes' }),
+          _react2.default.createElement(_recharts.Tooltip, null),
+          _react2.default.createElement(_recharts.Line, {
+            type: 'monotone',
+            dataKey: 'votes',
+            stroke: '#8884d8',
+            fill: '#8884d8'
+          })
+        )
       )
     )
   );

@@ -58,6 +58,8 @@ export const parseNewsData = (data) => {
       title: item.title,
       comments: item.num_comments,
       votes: __isServer__ ? item.points : getVotes(item),
+      url: item.url,
+      author: item.author,
     };
   });
   return newData;

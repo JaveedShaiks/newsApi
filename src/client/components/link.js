@@ -2,16 +2,16 @@ import React from 'react';
 
 export const Links = ({ pageNo }) => {
   const prevLink = pageNo - 1;
-  const NextLink = pageNo + 1;
+  const nextLink = pageNo + 1;
   return (
     <div className="container">
-      <div>
+      <div className="text-right links">
         <span className={prevLink < 1 ? 'disableLink' : ''}>
-          <a href={prevLink}>Prev</a>{' '}
+          <a href={prevLink.toString()}>Prev</a>{' '}
         </span>
         |{' '}
-        <span className={prevLink >= 50 ? 'disableLink' : ''}>
-          <a href={NextLink}>Next</a>
+        <span className={nextLink >= 50 ? 'disableLink' : ''}>
+          <a href={nextLink.toString()}>Next</a>
         </span>
       </div>
     </div>
