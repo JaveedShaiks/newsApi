@@ -13,7 +13,19 @@ const config = {
     new webpack.DefinePlugin({
       __isServer__: false,
     }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+      },
+      minimize: true,
+      sourceMap: true,
+    }),
+    new webpack.EnvironmentPlugin({ NODE_ENV: 'production' }),
   ],
+  devtool: 'source-map',
+  devServer: {
+    compress: true,
+  },
 };
 
 module.exports = merge(commonConfig, config);

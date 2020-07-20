@@ -15,7 +15,19 @@ const config = {
     new webpack.DefinePlugin({
       __isServer__: true,
     }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+      },
+      minimize: true,
+      sourceMap: true,
+    }),
+    new webpack.EnvironmentPlugin({ NODE_ENV: 'production' }),
   ],
+  devtool: 'source-map',
+  devServer: {
+    compress: true,
+  },
   externals: [webpackNodeExternals()],
 };
 
