@@ -6,11 +6,17 @@ export const Links = ({ pageNo }) => {
   return (
     <div className="container">
       <div className="text-right links">
-        <span className={prevLink < 1 ? 'disableLink' : ''}>
+        <span
+          data-testid="link-prev"
+          className={prevLink < 1 ? 'disableLink' : ''}
+        >
           <a href={prevLink.toString()}>Prev</a>{' '}
         </span>
         |{' '}
-        <span className={nextLink >= 50 ? 'disableLink' : ''}>
+        <span
+          data-testid="link-next"
+          className={nextLink >= 50 ? 'disableLink' : ''}
+        >
           <a href={nextLink.toString()}>Next</a>
         </span>
       </div>

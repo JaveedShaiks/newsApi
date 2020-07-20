@@ -749,7 +749,10 @@ var Links = exports.Links = function Links(_ref) {
       { className: "text-right links" },
       _react2.default.createElement(
         "span",
-        { className: prevLink < 1 ? 'disableLink' : '' },
+        {
+          "data-testid": "link-prev",
+          className: prevLink < 1 ? 'disableLink' : ''
+        },
         _react2.default.createElement(
           "a",
           { href: prevLink.toString() },
@@ -761,7 +764,10 @@ var Links = exports.Links = function Links(_ref) {
       ' ',
       _react2.default.createElement(
         "span",
-        { className: nextLink >= 50 ? 'disableLink' : '' },
+        {
+          "data-testid": "link-next",
+          className: nextLink >= 50 ? 'disableLink' : ''
+        },
         _react2.default.createElement(
           "a",
           { href: nextLink.toString() },
